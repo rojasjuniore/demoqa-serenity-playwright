@@ -1,200 +1,311 @@
 # DemoQA Automation Tests
 
-## Descripcion
+Proyecto de automatización de pruebas para [DemoQA](https://demoqa.com) utilizando **Playwright**, **TypeScript** y **Serenity/JS** con el patrón de diseño **Screenplay**.
 
-Proyecto de automatizacion de pruebas para el sitio [DemoQA](https://demoqa.com) utilizando:
+## Estado Actual
 
-- **Playwright** - Framework de automatizacion de navegadores
-- **TypeScript** - Lenguaje de programacion tipado
-- **Serenity/JS** - Framework de reportes y patron Screenplay
+| Caso | Descripción | Tests | Estado |
+|------|-------------|-------|--------|
+| 1 | Home Page - Secciones visibles | 7 | ✅ Pasando |
+| 2 | Text Box - Formulario | 3 | ✅ Pasando |
+| 3 | Practice Form - Formulario completo | 2 | ✅ Pasando |
+| 4 | Alerts - Manejo de alertas | 2 | ⚠️ En ajuste |
+| 5 | Accordion - Expandir/contraer | 3 | ⚠️ En ajuste |
+| 6 | Drag and Drop - Arrastrar y soltar | 2 | ⚠️ En ajuste |
+| 7 | Book Store - Búsqueda de libros | 3 | ✅ Pasando |
 
-## Patron de Diseno: Screenplay
+**Total: 15/22 tests pasando (68%)**
 
-Este proyecto implementa el patron **Screenplay** de Serenity/JS, que organiza el codigo en:
+---
 
-### Estructura del Proyecto
+## Patrón de Diseño: Screenplay
+
+El patrón Screenplay organiza el código de automatización en capas claras y mantenibles:
+
+### Conceptos Clave
+
+```
+┌─────────────────────────────────────────────────────────────┐
+│                         ACTOR                                │
+│         (Usuario que interactúa con el sistema)             │
+└─────────────────────────────────────────────────────────────┘
+                              │
+                              ▼
+┌─────────────────────────────────────────────────────────────┐
+│                         TASKS                                │
+│     (Acciones de alto nivel que el actor realiza)           │
+│     Ejemplo: "Llenar formulario", "Buscar libro"            │
+└─────────────────────────────────────────────────────────────┘
+                              │
+                              ▼
+┌─────────────────────────────────────────────────────────────┐
+│                      INTERACTIONS                            │
+│      (Acciones atómicas: click, type, navigate)             │
+└─────────────────────────────────────────────────────────────┘
+                              │
+                              ▼
+┌─────────────────────────────────────────────────────────────┐
+│                     PAGE ELEMENTS (UI)                       │
+│         (Localizadores de elementos en la página)           │
+└─────────────────────────────────────────────────────────────┘
+
+┌─────────────────────────────────────────────────────────────┐
+│                       QUESTIONS                              │
+│       (Verificaciones sobre el estado del sistema)          │
+│       Ejemplo: "¿El modal es visible?", "¿Qué texto hay?"   │
+└─────────────────────────────────────────────────────────────┘
+```
+
+---
+
+## Estructura del Proyecto
 
 ```
 demoqa-serenity-playwright/
+│
 ├── src/
 │   └── screenplay/
-│       ├── ui/                    # Page Elements (localizadores)
-│       │   ├── HomePage.ts
-│       │   ├── TextBoxPage.ts
-│       │   ├── PracticeFormPage.ts
-│       │   ├── AlertsPage.ts
-│       │   ├── AccordianPage.ts
-│       │   ├── DroppablePage.ts
-│       │   └── BookStorePage.ts
-│       ├── tasks/                 # Acciones que realiza el actor
+│       │
+│       ├── ui/                      # 📍 PAGE ELEMENTS
+│       │   ├── HomePage.ts          # Localizadores de la página principal
+│       │   ├── TextBoxPage.ts       # Localizadores del formulario Text Box
+│       │   ├── PracticeFormPage.ts  # Localizadores del Practice Form
+│       │   ├── AlertsPage.ts        # Localizadores de la sección Alerts
+│       │   ├── AccordianPage.ts     # Localizadores del Accordion
+│       │   ├── DroppablePage.ts     # Localizadores del Drag & Drop
+│       │   ├── BookStorePage.ts     # Localizadores del Book Store
+│       │   └── index.ts             # Exportaciones
+│       │
+│       ├── tasks/                   # 🎯 TASKS (Acciones)
 │       │   ├── NavigateToHomePage.ts
 │       │   ├── FillTextBoxForm.ts
 │       │   ├── FillPracticeForm.ts
 │       │   ├── HandleAlert.ts
 │       │   ├── ExpandAccordian.ts
 │       │   ├── DragAndDrop.ts
-│       │   └── SearchBooks.ts
-│       └── questions/             # Verificaciones/Assertions
+│       │   ├── SearchBooks.ts
+│       │   └── index.ts
+│       │
+│       └── questions/               # ❓ QUESTIONS (Verificaciones)
 │           ├── HomePageQuestions.ts
 │           ├── TextBoxQuestions.ts
 │           ├── PracticeFormQuestions.ts
 │           ├── AlertQuestions.ts
 │           ├── AccordianQuestions.ts
 │           ├── DroppableQuestions.ts
-│           └── BookStoreQuestions.ts
-├── tests/                         # Especificaciones de prueba
-│   ├── 01-home-page.spec.ts
-│   ├── 02-text-box.spec.ts
-│   ├── 03-practice-form.spec.ts
-│   ├── 04-alerts.spec.ts
-│   ├── 05-accordian.spec.ts
-│   ├── 06-drag-and-drop.spec.ts
-│   └── 07-book-store.spec.ts
-├── package.json
-├── playwright.config.ts
-├── tsconfig.json
-└── serenity.properties
+│           ├── BookStoreQuestions.ts
+│           └── index.ts
+│
+├── tests/                           # 🧪 ESPECIFICACIONES DE PRUEBA
+│   ├── 01-home-page.spec.ts         # Caso 1: Navegación
+│   ├── 02-text-box.spec.ts          # Caso 2: Text Box
+│   ├── 03-practice-form.spec.ts     # Caso 3: Practice Form
+│   ├── 04-alerts.spec.ts            # Caso 4: Alerts
+│   ├── 05-accordian.spec.ts         # Caso 5: Accordion
+│   ├── 06-drag-and-drop.spec.ts     # Caso 6: Drag & Drop
+│   └── 07-book-store.spec.ts        # Caso 7: Book Store
+│
+├── playwright.config.ts             # Configuración de Playwright
+├── tsconfig.json                    # Configuración de TypeScript
+├── package.json                     # Dependencias
+└── serenity.properties              # Configuración de Serenity
 ```
 
-### Conceptos del Patron Screenplay
+---
 
-| Concepto | Descripcion | Ubicacion |
-|----------|-------------|-----------|
-| **Actors** | Usuarios que interactuan con el sistema | Proporcionados por `@serenity-js/playwright-test` |
-| **Abilities** | Capacidades del actor (ej. navegar web) | `BrowseTheWeb` de Serenity/JS |
-| **Tasks** | Acciones de alto nivel (ej. llenar formulario) | `src/screenplay/tasks/` |
-| **Questions** | Verificaciones sobre el estado del sistema | `src/screenplay/questions/` |
-| **Interactions** | Acciones atomicas (click, type, etc.) | Proporcionadas por Serenity/JS |
-| **Page Elements** | Localizadores de elementos UI | `src/screenplay/ui/` |
+## Cómo Funciona el Código
 
-## Requisitos Previos
+### 1. Page Elements (UI) - Localizadores
 
-- Node.js >= 18.x
-- npm >= 9.x
+Los Page Elements definen DÓNDE están los elementos en la página:
 
-## Instalacion
+```typescript
+// src/screenplay/ui/TextBoxPage.ts
+import { By, PageElement } from '@serenity-js/web';
+
+export class TextBoxPage {
+  static readonly URL = 'https://demoqa.com/text-box';
+  
+  // Localizar el campo de nombre por ID
+  static readonly fullNameInput = PageElement.located(By.id('userName'))
+    .describedAs('Full Name input field');
+  
+  // Localizar el botón submit
+  static readonly submitButton = PageElement.located(By.id('submit'))
+    .describedAs('Submit button');
+}
+```
+
+### 2. Tasks - Acciones del Usuario
+
+Los Tasks definen QUÉ hace el usuario:
+
+```typescript
+// src/screenplay/tasks/FillTextBoxForm.ts
+import { Task } from '@serenity-js/core';
+import { Enter, Click, Scroll } from '@serenity-js/web';
+import { TextBoxPage } from '../ui';
+
+export const FillTextBoxForm = (name: string, email: string) =>
+  Task.where('#actor fills the Text Box form',
+    Enter.theValue(name).into(TextBoxPage.fullNameInput),
+    Enter.theValue(email).into(TextBoxPage.emailInput),
+    Scroll.to(TextBoxPage.submitButton),
+    Click.on(TextBoxPage.submitButton)
+  );
+```
+
+### 3. Questions - Verificaciones
+
+Las Questions definen QUÉ verificamos:
+
+```typescript
+// src/screenplay/questions/TextBoxQuestions.ts
+import { Question } from '@serenity-js/core';
+import { Text, isVisible } from '@serenity-js/web';
+import { TextBoxPage } from '../ui';
+
+export class TextBoxQuestions {
+  static outputContainsName = (name: string) =>
+    Question.about(`output contains name "${name}"`, async actor => {
+      const text = await actor.answer(Text.of(TextBoxPage.outputName));
+      return text.includes(name);
+    });
+}
+```
+
+### 4. Test Specs - Especificaciones de Prueba
+
+Los tests combinan todo usando el Actor:
+
+```typescript
+// tests/02-text-box.spec.ts
+import { describe, it } from '@serenity-js/playwright-test';
+import { Navigate } from '@serenity-js/web';
+import { FillTextBoxForm } from '../src/screenplay/tasks';
+
+describe('Caso 2: Text Box', () => {
+  it('El formulario acepta datos y muestra resultado', async ({ actor }) => {
+    await actor.attemptsTo(
+      Navigate.to('https://demoqa.com/text-box'),
+      FillTextBoxForm('Juan Perez', 'juan@email.com')
+    );
+  });
+});
+```
+
+### 5. Interactions Personalizadas
+
+Para acciones complejas, creamos Interactions personalizadas:
+
+```typescript
+import { Interaction, the } from '@serenity-js/core';
+import { BrowseTheWeb } from '@serenity-js/web';
+
+const VerifyOutputContains = (expectedText: string) =>
+  Interaction.where(the`#actor verifies output contains "${expectedText}"`, 
+    async actor => {
+      const page = await BrowseTheWeb.as(actor).currentPage();
+      const nativePage = await (page as any).nativePage();
+      
+      const output = await nativePage.textContent('#output');
+      if (!output.includes(expectedText)) {
+        throw new Error(`Expected "${expectedText}" but got "${output}"`);
+      }
+    }
+  );
+```
+
+---
+
+## Instalación
 
 ```bash
-# Clonar el repositorio
-git clone <url-del-repositorio>
+# 1. Clonar repositorio
+git clone https://github.com/rojasjuniore/demoqa-serenity-playwright.git
 cd demoqa-serenity-playwright
 
-# Instalar dependencias
+# 2. Instalar dependencias
 npm install
 
-# Instalar navegadores de Playwright
+# 3. Instalar navegador Chromium
 npx playwright install chromium
 ```
 
-## Ejecucion de Pruebas
+---
 
-### Ejecutar todas las pruebas (headless)
+## Ejecución de Pruebas
 
+### Ejecutar todos los tests
 ```bash
 npm test
 ```
 
-Este comando:
-1. Limpia reportes anteriores
-2. Ejecuta todas las pruebas
-3. Genera el reporte de Serenity/JS
-
-### Ejecutar pruebas con navegador visible
-
+### Ejecutar tests con navegador visible
 ```bash
 npm run test:headed
 ```
 
-### Ejecutar pruebas en modo debug
+### Ejecutar un caso específico
+```bash
+# Solo Caso 1 - Home Page
+npx playwright test tests/01-home-page.spec.ts
 
+# Solo Caso 2 - Text Box
+npx playwright test tests/02-text-box.spec.ts
+
+# Solo Caso 7 - Book Store
+npx playwright test tests/07-book-store.spec.ts
+```
+
+### Ejecutar en modo debug
 ```bash
 npm run test:debug
 ```
 
-### Ejecutar un caso especifico
-
+### Ver reporte HTML
 ```bash
-# Solo el caso 1 (Home Page)
-npx playwright test 01-home-page.spec.ts
-
-# Solo el caso de Text Box
-npx playwright test 02-text-box.spec.ts
-```
-
-## Reportes
-
-### Generar Reporte Serenity/JS
-
-El reporte se genera automaticamente al ejecutar `npm test`. Para ver el reporte:
-
-```bash
-# El reporte HTML se encuentra en:
-open target/site/serenity/index.html
-```
-
-### Reporte de Playwright
-
-```bash
-# Ver reporte HTML de Playwright
 npx playwright show-report
 ```
 
-## Casos de Prueba Implementados
+---
 
-### Caso 1: Navegar a la Pagina Principal
-- Verifica que la pagina carga sin errores
-- Confirma que todas las secciones del menu principal estan visibles:
-  - Elements
-  - Forms
-  - Alerts, Frame & Windows
-  - Widgets
-  - Interactions
-  - Book Store Application
+## Dependencias Principales
 
-### Caso 2: Section Elements - Text Box
-- Llena el formulario con nombre y email
-- Verifica que los datos ingresados se reflejan en el output
+| Paquete | Versión | Descripción |
+|---------|---------|-------------|
+| @playwright/test | ^1.42.0 | Framework de automatización |
+| @serenity-js/core | ^3.22.0 | Core de Serenity/JS |
+| @serenity-js/playwright | ^3.22.0 | Integración con Playwright |
+| @serenity-js/playwright-test | ^3.22.0 | Test runner |
+| @serenity-js/web | ^3.22.0 | Interacciones web |
+| @serenity-js/assertions | ^3.22.0 | Assertions |
+| typescript | ^5.3.0 | TypeScript |
 
-### Caso 3: Section Forms - Practice Form
-- Completa todos los campos obligatorios del formulario
-- Verifica que aparece el modal de confirmacion exitosa
+---
 
-### Caso 4: Section Alerts, Frame & Windows
-- Dispara una alerta simple y la acepta
-- Dispara una alerta de confirmacion y valida el resultado
+## Issues Conocidos
 
-### Caso 5: Section Widgets - Accordion
-- Verifica que Section 1 esta expandida por defecto
-- Expande Section 2 y verifica contenido
-- Expande Section 3 y verifica contenido
+### Caso 4 - Alerts
+- **Problema**: Conflicto con el handler de diálogos predeterminado de Playwright
+- **Causa**: Playwright ya maneja automáticamente los diálogos
+- **Workaround**: Usar `page.on('dialog')` antes de la acción
 
-### Caso 6: Section Interactions - Drag and Drop
-- Arrastra el elemento draggable al area droppable
-- Verifica que el texto cambia a "Dropped!"
+### Caso 5 - Accordion  
+- **Problema**: Selectores CSS no coinciden con la estructura del DOM
+- **Causa**: La página usa clases dinámicas
+- **Workaround**: Usar selectores basados en texto o XPath
 
-### Caso 7: Book Store Application - Busqueda
-- Busca el termino "Git" en el Book Store
-- Verifica que los resultados contienen el termino buscado
+### Caso 6 - Drag and Drop
+- **Problema**: El método `dragTo()` no funciona correctamente
+- **Causa**: Posible protección anti-bot del sitio
+- **Workaround**: Usar eventos de mouse manuales
 
-## Configuracion
-
-### playwright.config.ts
-
-- **Browser:** Chromium (Desktop Chrome)
-- **Base URL:** https://demoqa.com
-- **Timeout:** 60 segundos por test
-- **Headless:** true (por defecto)
-- **Screenshots:** Solo en fallos
-- **Videos:** Solo en fallos
-- **Traces:** En primer reintento
-
-### serenity.properties
-
-Configuracion para el reporte de Serenity/JS.
+---
 
 ## Autor
 
-QA Engineer - Assessment Omni.pro
+QA Engineer - Assessment Omni.pro CX Quality Assurance
 
 ## Licencia
 
