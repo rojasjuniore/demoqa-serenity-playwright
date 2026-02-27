@@ -9,17 +9,20 @@ const TriggerAndAcceptSimpleAlert = () =>
     const nativePage = await (page as any).nativePage();
     
     await nativePage.waitForLoadState('domcontentloaded');
+    await nativePage.waitForSelector('#alertButton', { state: 'visible', timeout: 15000 });
     
-    // Set up dialog handler before clicking
-    nativePage.once('dialog', async (dialog: any) => {
-      await dialog.accept();
-    });
+    // Set up dialog handler BEFORE triggering
+    const dialogHandler = (dialog: any) => dialog.accept();
+    nativePage.on('dialog', dialogHandler);
     
     // Click the alert button
     await nativePage.click('#alertButton');
     
-    // Small wait to ensure dialog was handled
-    await nativePage.waitForTimeout(500);
+    // Small wait for dialog
+    await nativePage.waitForTimeout(1000);
+    
+    // Remove handler
+    nativePage.off('dialog', dialogHandler);
   });
 
 const TriggerAndAcceptConfirmAlert = () =>
@@ -28,17 +31,20 @@ const TriggerAndAcceptConfirmAlert = () =>
     const nativePage = await (page as any).nativePage();
     
     await nativePage.waitForLoadState('domcontentloaded');
+    await nativePage.waitForSelector('#confirmButton', { state: 'visible', timeout: 15000 });
     
-    // Set up dialog handler before clicking
-    nativePage.once('dialog', async (dialog: any) => {
-      await dialog.accept();
-    });
+    // Set up dialog handler BEFORE triggering
+    const dialogHandler = (dialog: any) => dialog.accept();
+    nativePage.on('dialog', dialogHandler);
     
     // Click the confirm button
     await nativePage.click('#confirmButton');
     
     // Wait for result to appear
     await nativePage.waitForSelector('#confirmResult', { state: 'visible', timeout: 5000 });
+    
+    // Remove handler
+    nativePage.off('dialog', dialogHandler);
   });
 
 const VerifyConfirmResult = () =>
