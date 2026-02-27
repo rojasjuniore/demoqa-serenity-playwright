@@ -8,7 +8,7 @@ const WaitForAccordianPage = () =>
     const page = await BrowseTheWeb.as(actor).currentPage();
     const nativePage = await (page as any).nativePage();
     
-    await nativePage.waitForLoadState('networkidle');
+    await nativePage.waitForLoadState('domcontentloaded');
     await nativePage.waitForSelector('#section1Heading', { state: 'visible', timeout: 10000 });
   });
 

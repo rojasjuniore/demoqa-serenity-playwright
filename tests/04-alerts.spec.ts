@@ -8,7 +8,7 @@ const TriggerAndAcceptSimpleAlert = () =>
     const page = await BrowseTheWeb.as(actor).currentPage();
     const nativePage = await (page as any).nativePage();
     
-    await nativePage.waitForLoadState('networkidle');
+    await nativePage.waitForLoadState('domcontentloaded');
     
     // Set up dialog handler before clicking
     nativePage.once('dialog', async (dialog: any) => {
@@ -27,7 +27,7 @@ const TriggerAndAcceptConfirmAlert = () =>
     const page = await BrowseTheWeb.as(actor).currentPage();
     const nativePage = await (page as any).nativePage();
     
-    await nativePage.waitForLoadState('networkidle');
+    await nativePage.waitForLoadState('domcontentloaded');
     
     // Set up dialog handler before clicking
     nativePage.once('dialog', async (dialog: any) => {

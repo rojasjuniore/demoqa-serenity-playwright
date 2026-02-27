@@ -14,7 +14,7 @@ const FillAndSubmitTextBoxForm = (name: string, email: string) =>
     const page = await BrowseTheWeb.as(actor).currentPage();
     const nativePage = await (page as any).nativePage();
     
-    await nativePage.waitForLoadState('networkidle');
+    await nativePage.waitForLoadState('domcontentloaded');
     
     // Fill form fields
     await nativePage.fill('#userName', name);

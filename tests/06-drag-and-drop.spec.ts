@@ -8,7 +8,7 @@ const PerformDragAndDrop = () =>
     const page = await BrowseTheWeb.as(actor).currentPage();
     const nativePage = await (page as any).nativePage();
     
-    await nativePage.waitForLoadState('networkidle');
+    await nativePage.waitForLoadState('domcontentloaded');
     
     // Wait for elements
     await nativePage.waitForSelector('#draggable', { state: 'visible' });

@@ -15,7 +15,7 @@ const FillAndSubmitPracticeForm = () =>
     const page = await BrowseTheWeb.as(actor).currentPage();
     const nativePage = await (page as any).nativePage();
     
-    await nativePage.waitForLoadState('networkidle');
+    await nativePage.waitForLoadState('domcontentloaded');
     
     // Fill required fields
     await nativePage.fill('#firstName', testData.firstName);

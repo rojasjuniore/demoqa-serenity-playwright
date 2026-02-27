@@ -12,7 +12,7 @@ const WaitForHomePageLoad = () =>
     const nativePage = await (page as any).nativePage();
     
     // Wait for the page to be fully loaded
-    await nativePage.waitForLoadState('networkidle');
+    await nativePage.waitForLoadState('domcontentloaded');
     
     // Scroll to ensure all cards are visible
     await nativePage.evaluate(() => window.scrollTo(0, 500));
